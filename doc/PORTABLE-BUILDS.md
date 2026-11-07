@@ -13,3 +13,7 @@ After all checks pass, the publish job creates a uniquely tagged prerelease cont
 Download a platform ZIP, extract the complete folder, and run Play.cmd (Windows) or ./Play.sh (Linux). On Linux, use chmod +x Play.sh UrQuanMasters if the extractor loses executable permissions. Linux requires glibc 2.35+ and host graphics/audio facilities; it does not support every possible Linux distribution. Saves remain in the game's normal per-user configuration directory.
 
 Content includes base, HD, 3DO voices and optional DOS/3DO modes; the game chooses assets according to setup preferences. The content license is documented in content/README.md. Code and bundled libraries retain their own licenses. Package versions are recorded, but the OS/MSYS2 package repositories remain moving sources, so builds are traceable rather than bit-for-bit reproducible.
+
+## First run on a new fork
+
+Enable GitHub Actions on the fork if GitHub prompts you. Start the workflow on master, then confirm a run is queued or in progress on the Actions page before closing your computer. All build, test and publishing jobs run on GitHub-hosted machines and continue independently of your local machine. The Releases page receives the two playable ZIPs only after the validation jobs pass.
