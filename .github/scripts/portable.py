@@ -115,7 +115,7 @@ def stage(platform, binary, content):
                         "then run ./Play.sh. If your extractor drops permissions, run\n"
                         "chmod +x Play.sh UrQuanMasters first. Requires a desktop session\n"
                         "and the host graphics/audio drivers. No game-library installation is needed.")
-    subprocess.check_call(["git", "archive", "--format=zip",
+    subprocess.check_call(["git", "-c", "safe.directory=" + str(ROOT), "archive", "--format=zip",
                            "--output=" + str(dest / "GAME-SOURCE.zip"), "HEAD"], cwd=ROOT)
     write(dest / "PLAY-README.txt", instructions + "\n\n"
           "All base content, HD content, voices, and DOS/3DO mode assets are included.\n"
