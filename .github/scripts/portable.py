@@ -100,7 +100,12 @@ def stage(platform, binary, content):
             target = licenses / "ubuntu-packages" / copyright_file.parent.name
             target.mkdir(parents=True, exist_ok=True)
             shutil.copy2(copyright_file, target / "copyright")
-        write(dest / "DEPENDENCY-VERSIONS.txt", run("dpkg-query", "-W"))
+        write(dest / "DEPENDENCY-VERSIONS.txt", run("dpkg-query", "-W")
+              + "\nBundled SDL2: 2.32.10, built from the included SDL2-SOURCE.tar.gz\n")
+        shutil.copy2("/tmp/uqm-sdl/SDL2-2.32.10.tar.gz", dest / "SDL2-SOURCE.tar.gz")
+        sdl_license = licenses / "built-sdl2"
+        sdl_license.mkdir()
+        shutil.copy2("/tmp/uqm-sdl/SDL2-2.32.10/LICENSE.txt", sdl_license / "LICENSE.txt")
         exe.chmod(0o755)
         write(dest / "Play.sh", '#!/bin/sh\nset -eu\n'
               'GAME_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)\n'
@@ -164,7 +169,8 @@ def smoke(archive):
         executable = game / ("UrQuanMasters.exe" if windows else "Play.sh")
         env = dict(os.environ)
         if windows:
-            env["PATH"] = str(Path(env["SystemRoot"]) / "System32")
+            env = {key.upper(): value for key, value in env.items()}
+            env["PATH"] = str(Path(env["SYSTEMROOT"]) / "System32")
         env["SDL_AUDIODRIVER"] = "dummy"
         version = subprocess.run([str(executable), "--version"], cwd=base, env=env,
                                  capture_output=True, timeout=30)

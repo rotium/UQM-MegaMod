@@ -16,13 +16,17 @@ jobs:
     name: Build Linux x86-64 portable ZIP
     runs-on: ubuntu-24.04
     container: ubuntu:22.04
+    env:
+      PKG_CONFIG_PATH: /opt/uqm-sdl/lib/pkgconfig
+      LIBRARY_PATH: /opt/uqm-sdl/lib
+      LD_LIBRARY_PATH: /opt/uqm-sdl/lib
     timeout-minutes: 60
     steps:
       - name: Install cloud build tools
         run: |
           apt-get update
           DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            ca-certificates git build-essential cmake ninja-build pkg-config python3 \
+            ca-certificates curl git build-essential cmake ninja-build pkg-config python3 \
             patchelf libsdl2-dev libpng-dev libogg-dev libvorbis-dev zlib1g-dev
       - uses: actions/checkout@v6
         with:
@@ -34,6 +38,8 @@ jobs:
           ref: ${{ env.CONTENT_SHA }}
           path: content-source
           persist-credentials: false
+      - name: Build pinned SDL2 for the Ubuntu 22.04 baseline
+        run: sh .github/scripts/build-sdl.sh
       - name: Configure and compile release
         run: |
           cmake -S . -B out -G Ninja -DCMAKE_BUILD_TYPE=Release -DUQM_DEBUG=OFF
